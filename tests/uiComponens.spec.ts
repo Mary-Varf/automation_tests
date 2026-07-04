@@ -75,3 +75,36 @@ test("Checkboxes", async ({ page }) => {
     expect(await box.isChecked()).toBeFalsy();
   }
 });
+
+test("lists and dropdowns", async ({ page }) => {
+  const dropDownMenu = page.locator("ngx-header nb-select");
+  await dropDownMenu.click();
+
+  // page.getByRole("list"); // for ul
+  // page.getByRole("listitem"); // for li
+
+  const optionList = page.locator("nb-option-list nb-option");
+  await expect(optionList).toHaveText(["Light", "Dark", "Cosmic", "Corporate"]);
+
+  await optionList.filter({ hasText: "Cosmic" }).click();
+
+  const body = page.locator("body");
+  const header = page.locator("nb-layout-header");
+  await expect(body).toContainClass("nb-theme-cosmic");
+  await expect(header).toHaveCSS("background-color", "rgb(50, 50, 89)");
+
+  const colors = {
+    Light: "rgb(255, 255, 255)",
+    Dark: "rgb(34, 43, 69)",
+    Cosmic: "rgb(50, 50, 89)",
+    Corporate: "rgb(255, 255, 255)",
+  };
+
+  for (const [color, value] of Object.entries(colors)) {
+    await dropDownMenu.click();
+    await optionList.filter({ hasText: color }).click();
+    await expect(header).toHaveCSS("background-color", value);
+    const themedColor = color == "Light" ? "default" : color.toLowerCase();
+    await expect(body).toContainClass(`nb-theme-${themedColor}`);
+  }
+});
