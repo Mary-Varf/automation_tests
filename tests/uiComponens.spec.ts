@@ -248,3 +248,33 @@ test("datepickers", async ({ page }) => {
 
   expect(datepicker).toHaveValue(expectedDateString);
 });
+
+test("sliders", async ({ page }) => {
+  // update attr
+  const tempGauge = page.locator('[tabtitle="Temperature"] circle');
+  await tempGauge.evaluate((node) => {
+    node.setAttribute("cx", "199.167");
+    node.setAttribute("cy", "26.048");
+  });
+
+  await tempGauge.click();
+
+  //Mouse move
+  const tempBox = page
+    .locator("ngx-temperature-dragger")
+    .filter({ hasText: "Celsius" });
+  await tempBox.scrollIntoViewIfNeeded();
+
+  //Top(y=0) left(x=0)
+  const box = await tempBox.boundingBox();
+  const x = box?.x + box?.width / 2;
+  const y = box?.y + box?.height / 2;
+
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  await page.mouse.move(x + 100, y);
+  await page.mouse.move(x + 100, y + 100);
+  await page.mouse.up();
+
+  await expect(tempBox).toContainText("30");
+});
