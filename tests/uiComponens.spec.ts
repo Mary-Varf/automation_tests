@@ -140,3 +140,65 @@ test("dialog box", async ({ page }) => {
     "mdo@gmail.com",
   );
 });
+
+test("web tables", async ({ page }) => {
+  await page.getByText("Tables & Data").click();
+  await page.getByText("Smart Table").click();
+
+  const row = page.getByRole("row", { name: "snow@gmail.com" });
+  await row.locator(".nb-edit").click();
+
+  const editedRow = page.locator("tr.selected");
+  await editedRow.locator('input[ng-reflect-name="age"]').clear();
+  await editedRow.locator('input[ng-reflect-name="age"]').fill("3");
+  await editedRow.locator("a.ng2-smart-action-edit-save").click();
+
+  await expect(row.locator("nb-checkmark").last()).toHaveText("3");
+});
+
+test("web tables page 2", async ({ page }) => {
+  await page.getByText("Tables & Data").click();
+  await page.getByText("Smart Table").click();
+
+  const pageTwoBtn = page.locator("ul.pagination li", { hasText: "2" });
+  await pageTwoBtn.click();
+
+  const row = page
+    .getByRole("row", { name: "11" })
+    .filter({ has: page.locator("td").nth(1).getByText("11") });
+  await row.locator(".nb-edit").click();
+
+  await page.locator("input-editor").getByPlaceholder("Age").clear();
+  await page.locator("input-editor").getByPlaceholder("Age").fill("11");
+  await page.locator("i.nb-checkmark").click();
+
+  await expect(row.locator("td").last()).toHaveText("11");
+});
+
+test("web tables page 2 filter test", async ({ page }) => {
+  await page.getByText("Tables & Data").click();
+  await page.getByText("Smart Table").click();
+
+  const pageTwoBtn = page.locator("ul.pagination li", { hasText: "2" });
+  await pageTwoBtn.click();
+
+  const ages = ["20", "30", "40", "200"];
+  for (let val of ages) {
+    const ageInput = page.locator("input-filter").getByPlaceholder("Age");
+    await ageInput.clear();
+    await ageInput.fill(val);
+    await ageInput.press("Enter");
+    await page.waitForTimeout(2000);
+
+    const rows = page.locator("tbody tr");
+    for (let row of await rows.all()) {
+      const cellValue = await row.locator("td").last().textContent();
+
+      if (val === "200") {
+        expect(cellValue).toEqual(" No data found ");
+      } else {
+        expect(cellValue).toEqual(val);
+      }
+    }
+  }
+});
