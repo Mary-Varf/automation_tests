@@ -188,17 +188,63 @@ test("web tables page 2 filter test", async ({ page }) => {
     await ageInput.clear();
     await ageInput.fill(val);
     await ageInput.press("Enter");
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
 
     const rows = page.locator("tbody tr");
     for (let row of await rows.all()) {
       const cellValue = await row.locator("td").last().textContent();
 
-      if (val === "200") {
+      if (val === ages[ages.length - 1]) {
         expect(cellValue).toEqual(" No data found ");
       } else {
         expect(cellValue).toEqual(val);
       }
     }
   }
+});
+
+test("datepickers", async ({ page }) => {
+  await page.getByText("Forms").click();
+  await page.getByText("Datepicker").click();
+
+  const datepicker = page.getByPlaceholder("Form Picker");
+  await datepicker.click();
+
+  await page
+    .locator('[class="day-cell ng-star-inserted"]')
+    .getByText("1", { exact: true })
+    .click();
+
+  expect(datepicker).toHaveValue("Jul 1, 2026");
+
+  await datepicker.click();
+
+  let date = new Date();
+  date.setDate(date.getDate() + 100);
+
+  const expectedDate = date.getDate().toString();
+  const shortMonth = date.toLocaleString("En-US", { month: "short" });
+  const longMonth = date.toLocaleString("En-US", { month: "long" });
+  const year = date.getFullYear();
+  const expectedDateString = `${shortMonth} ${expectedDate}, ${year}`;
+
+  let calendarMonthAndYear = await page
+    .locator("nb-calendar-view-mode")
+    .textContent();
+  const expMonthAndYear = ` ${longMonth} ${year} `;
+  while (!calendarMonthAndYear?.includes(expMonthAndYear)) {
+    await page
+      .locator('nb-calendar-pageable-navigation [data-name="chevron-right"]')
+      .click();
+    calendarMonthAndYear = await page
+      .locator("nb-calendar-view-mode")
+      .textContent();
+  }
+
+  await page
+    .locator('[class="day-cell ng-star-inserted"]')
+    .getByText(expectedDate, { exact: true })
+    .click();
+
+  expect(datepicker).toHaveValue(expectedDateString);
 });
