@@ -5,7 +5,7 @@ import { DatepickerPage } from "./datepickerPage";
 import { HelperBase } from "./helperBase";
 
 export class PageManager extends HelperBase {
-  private readonly page: Page;
+  readonly page: Page;
   private readonly navigationPage: NavigationPage;
   private readonly formLayoutsPage: FormLayoutsPage;
   private readonly datepickerPage: DatepickerPage;

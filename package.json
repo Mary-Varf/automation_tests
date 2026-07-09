@@ -8,7 +8,10 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "ng serve"
+    "start": "ng serve",
+    "pageObjectsChrome": "npx playwright test pageObjectModel.spec.ts --project=chromium",
+    "pageObjectsFirefox": "npx playwright test pageObjectModel.spec.ts --project=firefox",
+    "pageObjectsAll": "npm run pageObjectsChrome && npm run pageObjectsFirefox"
   },
   "dependencies": {
     "@angular/animations": "^14.2.12",
@@ -68,7 +71,7 @@
     "@fortawesome/fontawesome-free": "^5.2.0",
     "@playwright/test": "^1.61.1",
     "@types/leaflet": "1.2.3",
-    "@types/node": "^12.12.70",
+    "@types/node": "^12.20.55",
     "codelyzer": "^0.0.28",
     "conventional-changelog-cli": "^2.2.2",
     "npm-run-all": "4.0.2",
