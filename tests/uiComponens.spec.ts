@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:4200");
+  await page.goto("/");
 });
 
 test.describe("Form Layout page", () => {
@@ -10,7 +10,10 @@ test.describe("Form Layout page", () => {
     await page.getByText("Form Layouts").click();
   });
 
-  test("input fields", async ({ page }) => {
+  test("input fields", async ({ page }, testInfo) => {
+    if (testInfo.retry) {
+      //clean db
+    }
     const usingTheGridEmailInput = page
       .locator("nb-card", { hasText: "Using the Grid" })
       .getByRole("textbox", { name: "Email" });

@@ -26,8 +26,8 @@ export class FormLayoutsPage extends HelperBase {
   }
 
   async submitInlineFormWithNameEmailAndCheckbox(
-    email: string,
     name: string,
+    email: string,
     rememberMe: boolean,
   ) {
     const inlineForm = this.page.locator("nb-card", {

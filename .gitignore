@@ -7,6 +7,8 @@
 /node_modules
 
 .auth/
+screenshots/
+.env
 
 # IDEs and editors
 /.idea

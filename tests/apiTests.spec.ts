@@ -1,20 +1,18 @@
-import { test, expect, request } from "@playwright/test";
+import { expect, request } from "@playwright/test";
+import { test } from "../test-options";
 import tags from "../test-data/tags.json";
 
-test.beforeEach(async ({ page }) => {
-  await page.route(
-    "https://conduit-api.bondaracademy.com/api/tags",
-    async (route) => {
-      await route.fulfill({ body: JSON.stringify(tags) });
-    },
-  );
+test.beforeEach(async ({ page, conduitQaURL }) => {
+  await page.route(`${conduitQaURL}/tags`, async (route) => {
+    await route.fulfill({ body: JSON.stringify(tags) });
+  });
 
   await page.goto("https://conduit.bondaracademy.com/");
 });
 
-test("has title", async ({ page }) => {
+test("has title", async ({ page, conduitQaURL }) => {
   await page.route(
-    "https://conduit-api.bondaracademy.com/api/articles?limit=10&offset=0",
+    `${conduitQaURL}/articles?limit=10&offset=0`,
     async (route) => {
       const response = await route.fetch();
       const responseBody = await response.json();
@@ -39,20 +37,17 @@ test("has title", async ({ page }) => {
   );
 });
 
-test("delete article", async ({ page, request }) => {
-  const articleResponse = await request.post(
-    "https://conduit-api.bondaracademy.com/api/articles/",
-    {
-      data: {
-        article: {
-          title: "Test title",
-          description: "Test description",
-          body: "Test body",
-          tagList: [],
-        },
+test("delete article", async ({ page, request, conduitQaURL }) => {
+  const articleResponse = await request.post(`${conduitQaURL}/articles/`, {
+    data: {
+      article: {
+        title: "Test title",
+        description: "Test description",
+        body: "Test body",
+        tagList: [],
       },
     },
-  );
+  });
 
   expect(articleResponse.status()).toEqual(201);
 
@@ -66,7 +61,7 @@ test("delete article", async ({ page, request }) => {
   );
 });
 
-test("crete article", async ({ page, request }) => {
+test("crete article", async ({ page, request, conduitQaURL }) => {
   await page.getByText("New Article").click();
   await page
     .getByRole("textbox", { name: "Article Title" })
@@ -78,9 +73,7 @@ test("crete article", async ({ page, request }) => {
     .getByRole("textbox", { name: "Write your article (in markdown)" })
     .fill("new article body");
   await page.getByRole("button", { name: " Publish Article " }).click();
-  const articleResponse = await page.waitForResponse(
-    "https://conduit-api.bondaracademy.com/api/articles/",
-  );
+  const articleResponse = await page.waitForResponse(`${request}/articles/`);
   const articleResponseBody = await articleResponse.json();
   const slugId = articleResponseBody?.article?.slug;
 
@@ -94,7 +87,7 @@ test("crete article", async ({ page, request }) => {
   );
 
   const deleteArticleResponse = await request.delete(
-    `https://conduit-api.bondaracademy.com/api/articles/${slugId}`,
+    `${conduitQaURL}/articles/${slugId}`,
   );
 
   await expect(deleteArticleResponse.status()).toEqual(204);
