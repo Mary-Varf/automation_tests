@@ -270,7 +270,9 @@ test("sliders", async ({ page }) => {
 
   //Top(y=0) left(x=0)
   const box = await tempBox.boundingBox();
+  // @ts-ignore
   const x = box?.x + box?.width / 2;
+  // @ts-ignore
   const y = box?.y + box?.height / 2;
 
   await page.mouse.move(x, y);

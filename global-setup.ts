@@ -1,5 +1,6 @@
 import fs from "fs";
 import { request, expect } from "@playwright/test";
+// @ts-ignore
 import user from "./.auth/user.json";
 
 const globalSetup = async () => {

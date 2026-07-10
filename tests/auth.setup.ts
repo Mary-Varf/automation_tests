@@ -1,5 +1,6 @@
 import { request } from "@playwright/test";
 import { test as setup } from "../test-option-conduit";
+// @ts-ignore
 import user from "../.auth/user.json";
 import fs from "fs";
 const authFile = ".auth/user.json";

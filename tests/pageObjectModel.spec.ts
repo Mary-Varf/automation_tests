@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("navigate to form page", async ({ page }) => {
+test("navigate to form page @smoke", async ({ page }) => {
   const pm = new PageManager(page);
 
   await pm.navigateTo().formLayoutPage();
@@ -27,6 +27,7 @@ test("parametrized methods", async ({ page }) => {
   await pm
     .onFormLayoutPage()
     .submitUsingTheGridFormWithCredentialsAndSelectOption(
+      // @ts-ignore
       process.env.USEREMAIL,
       process.env.PASSWORD,
       "Option 1",

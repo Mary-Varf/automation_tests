@@ -1,5 +1,6 @@
 import { expect, request } from "@playwright/test";
 import { test } from "../test-options";
+// @ts-ignore
 import tags from "../test-data/tags.json";
 
 test.beforeEach(async ({ page, conduitQaURL }) => {

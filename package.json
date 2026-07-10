@@ -9,7 +9,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "pageObjectsChrome": "npx playwright test pageObjectModel.spec.ts --project=chromium",
+    "chr": "npx playwright test pageObjectModel.spec.ts --project=chromium",
     "pageObjectsFirefox": "npx playwright test pageObjectModel.spec.ts --project=firefox",
     "likeCounter": "npx playwright test --project=likesCounter",
     "likeCounterGlobal": "npx playwright test --project=likesCounterGlobal",

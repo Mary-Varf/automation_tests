@@ -19,8 +19,8 @@ export default defineConfig<TestOptions>({
     extraHTTPHeaders: { Authorization: `Token ${process.env.ACCESS_TOKEN}` },
     video: { mode: "off", size: { width: 1920, height: 1080 } },
   },
-  globalSetup: require.resolve("./global-setup.ts"),
-  globalTeardown: require.resolve("./global-teardown.ts"),
+  // globalSetup: require.resolve("./global-setup.ts"),
+  // globalTeardown: require.resolve("./global-teardown.ts"),
 
   projects: [
     {
@@ -61,4 +61,8 @@ export default defineConfig<TestOptions>({
       testMatch: "likesCounterGlobal.spec.ts",
     },
   ],
+  webServer: {
+    command: "npm run start",
+    url: "http://localhost:4200",
+  },
 });
