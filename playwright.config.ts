@@ -1,5 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import type { TestOptions } from "./test-options";
+import { createArgosReporterOptions } from "@argos-ci/playwright/reporter";
 
 import dotenv from "dotenv";
 import path from "path";
@@ -10,7 +11,13 @@ export default defineConfig<TestOptions>({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
-  reporter: "html",
+  reporter: [
+    process.env.CI ? ["dot"] : ["list"],
+    [
+      "@argos-ci/playwright/reporter",
+      createArgosReporterOptions({ uploadToArgos: !!process.env.CI }),
+    ],
+  ],
   use: {
     baseURL: "http://localhost:4200",
     globalQaURL: "https://www.globalsqa.com/demo-site/draganddrop/",
@@ -18,6 +25,7 @@ export default defineConfig<TestOptions>({
     trace: "on-first-retry",
     extraHTTPHeaders: { Authorization: `Token ${process.env.ACCESS_TOKEN}` },
     video: { mode: "off", size: { width: 1920, height: 1080 } },
+    screenshot: "only-on-failure",
   },
   // globalSetup: require.resolve("./global-setup.ts"),
   // globalTeardown: require.resolve("./global-teardown.ts"),
